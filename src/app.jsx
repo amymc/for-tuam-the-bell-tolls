@@ -6,23 +6,38 @@ import "./app.css";
 export function App(props) {
   const [isReady, setIsReady] = useState(false);
   const [child, setChild] = useState(null);
+  const [stackedNum, setStackedNum] = useState(0);
+  // const voices = window.speechSynthesis.getVoices();
+
+  var controller = new AbortController();
+  var signal = controller.signal;
 
   useEffect(() => {
     window.speechSynthesis.onvoiceschanged = () => setIsReady(true);
   }, []);
 
-  let promise = Promise.resolve();
+  let audioPromise = Promise.resolve();
 
-  const onClick = () => {
+  const onClick = async (signal) => {
+    console.log("signal", signal);
     children.map((child) => {
-      promise = promise.then(() => {
+      console.log(child, "outer");
+
+      audioPromise = audioPromise.then(() => {
         console.log(child, "really");
         playAudio(child.name);
         setChild(child);
+        setStackedNum((stackedNum) =>
+          stackedNum < 10 ? stackedNum++ : stackedNum
+        );
         return new Promise(function (resolve) {
-          setTimeout(resolve, 3000);
+          if (!signal.aborted) {
+            setTimeout(resolve, 3000);
+          }
         });
       });
+
+      // audioPromise = await audioPromise({signal: controller.signal})
     });
   };
 
@@ -42,8 +57,7 @@ export function App(props) {
   function playAudio(phrase) {
     const utterance = new SpeechSynthesisUtterance(phrase);
     utterance.rate = 0.9;
-
-    const voices = [...window.speechSynthesis.getVoices()];
+    const voices = window.speechSynthesis.getVoices();
     utterance.voice = voices.find((voice) => voice.name == "Moira");
     // Interupt any speech already playing
     // window.speechSynthesis.cancel();
@@ -53,10 +67,40 @@ export function App(props) {
     window.speechSynthesis.speak(utterance);
   }
 
+  const pause = () => {
+    // window.speechSynthesis.pause();
+    controller.abort();
+  };
+  const resume = () => window.speechSynthesis.resume();
+  const skip = () => {};
+
   return (
     <>
       {child ? (
-        <RemembranceCard age={child.age} year={child.year} name={child.name} />
+        <>
+          <RemembranceCard
+            age={child.age}
+            year={child.year}
+            name={child.name}
+          />
+          <div>
+            <button>
+              <span class="material-icons" onClick={pause}>
+                pause_circle_outline
+              </span>
+            </button>
+            <button>
+              <span class="material-icons" onClick={resume}>
+                play_circle
+              </span>
+            </button>
+            <button>
+              <span class="material-icons" onClick={skip}>
+                skip_next
+              </span>
+            </button>
+          </div>
+        </>
       ) : (
         <>
           <h1 class="title">For Tuam the bell tolls</h1>

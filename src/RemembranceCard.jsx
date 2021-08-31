@@ -1,6 +1,5 @@
 import separator from "./separator.svg";
-import cross from "./cross.svg";
-import blood from "./blood.svg";
+import bloodyCross from "./bloody-cross.svg";
 import "./remembranceCard.css";
 
 const RemembranceCard = ({ name, age, year }) => {
@@ -9,10 +8,10 @@ const RemembranceCard = ({ name, age, year }) => {
       <div class="card-inner">
         In Loving Memory of
         <h2 class="card-title">{name}</h2>
-        Died in {year} aged {age}
-        <br />
-        <img class="cross" src={cross} />
-        <img class="blood" src={blood} />
+        <span class="card-subtitle">
+          Died in {year} aged {age}
+        </span>
+        <img class="cross" src={bloodyCross} />
         <br />
         Suffered at the hands of the Catholic Church
         <br />
