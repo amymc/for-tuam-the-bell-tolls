@@ -9,35 +9,74 @@ export function App(props) {
   const [stackedNum, setStackedNum] = useState(0);
   // const voices = window.speechSynthesis.getVoices();
 
-  var controller = new AbortController();
-  var signal = controller.signal;
+  const controller = new AbortController();
+  const { signal } = controller;
 
   useEffect(() => {
     window.speechSynthesis.onvoiceschanged = () => setIsReady(true);
   }, []);
 
-  let audioPromise = Promise.resolve();
+  function timeout(duration, signal) {
+    return new Promise((resolve, reject) => {
+      const handle = setTimeout(resolve, duration);
+      signal?.addEventListener("abort", (e) => {
+        clearTimeout(handle);
+        console.log("e", e);
+        reject(new Error("aborted"));
+      });
+    });
+  }
+  let audioPromise = timeout(1000, controller.signal);
 
-  const onClick = async (signal) => {
+  // let audioPromise = Promise.resolve();
+
+  // const listener = () => {
+  //   console.log("aborted", signal);
+  // };
+
+  // signal.addEventListener("abort", listener);
+
+  // const newAudio = async (child, signal) => {
+  //   playAudio(child.name);
+  //   setChild(child);
+  //   return new Promise(function (resolve) {
+  //     if (!signal.aborted) {
+  //       setTimeout(resolve, 3000);
+  //     }
+  //   });
+  // };
+
+  const onClick = async () => {
     console.log("signal", signal);
-    children.map((child) => {
+    children.map(async (child) => {
       console.log(child, "outer");
 
+      // await newAudio(child, { signal });
+
       audioPromise = audioPromise.then(() => {
-        console.log(child, "really");
         playAudio(child.name);
         setChild(child);
-        setStackedNum((stackedNum) =>
-          stackedNum < 10 ? stackedNum++ : stackedNum
-        );
-        return new Promise(function (resolve) {
-          if (!signal.aborted) {
-            setTimeout(resolve, 3000);
-          }
-        });
-      });
+        console.log("signal", signal);
 
-      // audioPromise = await audioPromise({signal: controller.signal})
+        // setStackedNum((stackedNum) =>
+        //   stackedNum < 10 ? stackedNum++ : stackedNum
+        // );
+        // if (!signal.aborted) {
+        return new Promise(function (resolve) {
+          setTimeout(resolve, 3000);
+          // timeout(resolve, 3000, signal);
+
+          // signal.addEventListener("abort", listener);
+          // signal.addEventListener("abort", () => {
+          //   ComponentSelector.log("aborting ", signal);
+          //   window.clearTimeout(timeout);
+          //   reject(new DOMException("Aborted", "AbortError"));
+          // });
+          // }
+        });
+
+        // audioPromise = await audioPromise({signal: controller.signal})
+      });
     });
   };
 
@@ -69,6 +108,7 @@ export function App(props) {
 
   const pause = () => {
     // window.speechSynthesis.pause();
+    debugger;
     controller.abort();
   };
   const resume = () => window.speechSynthesis.resume();
