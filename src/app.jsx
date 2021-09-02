@@ -1,7 +1,13 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState, useRef } from "preact/hooks";
+import * as Promise from "bluebird";
 import RemembranceCard from "./RemembranceCard.jsx";
 import children from "./children.json";
 import "./app.css";
+
+Promise.config({
+  // Enable cancellation
+  cancellation: true,
+});
 
 export function App(props) {
   const [isReady, setIsReady] = useState(false);
@@ -11,28 +17,58 @@ export function App(props) {
 
   const controller = new AbortController();
   const { signal } = controller;
+  let shouldCancel = useRef(false);
 
   useEffect(() => {
     window.speechSynthesis.onvoiceschanged = () => setIsReady(true);
   }, []);
 
-  function timeout(duration, signal) {
-    return new Promise((resolve, reject) => {
-      const handle = setTimeout(resolve, duration);
-      signal?.addEventListener("abort", (e) => {
-        clearTimeout(handle);
-        console.log("e", e);
-        reject(new Error("aborted"));
-      });
+  // function timeout(duration, signal) {
+  //   return new Promise((resolve, reject) => {
+  //     const handle = setTimeout(resolve, duration);
+  //     signal?.addEventListener("abort", (e) => {
+  //       clearTimeout(handle);
+  //       console.log("e", e);
+  //       reject(new Error("aborted"));
+  //     });
+  //   });
+  // }
+  // let audioPromise = timeout(1000, controller.signal);
+
+  function makeCancellableRequest(child) {
+    return new Promise(function (resolve, reject, onCancel) {
+      setTimeout(() => {
+        playAudio(child.name);
+        setChild(child);
+      }, 3000);
+
+      // var xhr = new XMLHttpRequest();
+      // xhr.on("load", resolve);
+      // xhr.on("error", reject);
+      // xhr.open("GET", url, true);
+      // xhr.send(null);
+      // Note the onCancel argument only exists if cancellation has been enabled!
+      // onCancel(function () {
+      //   console.log("wtf");
+      //   xhr.abort();
+      // });
     });
   }
-  let audioPromise = timeout(1000, controller.signal);
-
-  // let audioPromise = Promise.resolve();
-
-  // const listener = () => {
-  //   console.log("aborted", signal);
-  // };
+  let audioPromise = Promise.resolve();
+  let testP = Promise.resolve();
+  // let audioPromise = new Promise((resolve, reject, onCancel) => {
+  //   // const to = setTimeout(() => resolve(), 2000);
+  //   // setTimeout(resolve, 1000);
+  //   // resolve();
+  //   onCancel(() => {
+  //     console.log("onCancel called");
+  //     // clearTimeout(to);
+  //     reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+  //   });
+  // });
+  const listener = () => {
+    console.log("aborted", signal);
+  };
 
   // signal.addEventListener("abort", listener);
 
@@ -48,36 +84,112 @@ export function App(props) {
 
   const onClick = async () => {
     console.log("signal", signal);
-    children.map(async (child) => {
-      console.log(child, "outer");
+    // audioPromise.cancel();
 
-      // await newAudio(child, { signal });
-
-      audioPromise = audioPromise.then(() => {
-        playAudio(child.name);
-        setChild(child);
-        console.log("signal", signal);
-
-        // setStackedNum((stackedNum) =>
-        //   stackedNum < 10 ? stackedNum++ : stackedNum
-        // );
-        // if (!signal.aborted) {
-        return new Promise(function (resolve) {
+    Promise.each(children, function (child) {
+      // playAudio(child.name);
+      // setChild(child);
+      testP = new Promise(function (resolve, reject, onCancel) {
+        // setTimeout(resolve, 3000);
+        console.log("shouldCancel", shouldCancel.current);
+        if (!shouldCancel.current) {
+          playAudio(child.name);
+          setChild(child);
           setTimeout(resolve, 3000);
-          // timeout(resolve, 3000, signal);
-
-          // signal.addEventListener("abort", listener);
-          // signal.addEventListener("abort", () => {
-          //   ComponentSelector.log("aborting ", signal);
-          //   window.clearTimeout(timeout);
-          //   reject(new DOMException("Aborted", "AbortError"));
-          // });
-          // }
+        }
+        onCancel(() => {
+          console.log("onCancel called");
+          // clearTimeout(to);
+          reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
         });
-
-        // audioPromise = await audioPromise({signal: controller.signal})
       });
+      // return new Promise(function (resolve, reject, onCancel) {
+      //   playAudio(child.name);
+      //   setChild(child);
+      //   setTimeout(resolve, 3000);
+      //   onCancel(() => {
+      //     console.log("onCancel called");
+      //     // clearTimeout(to);
+      //     reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+      //   });
+      // });
+
+      return testP;
     });
+
+    // children.map(async (child) => {
+    //   //   // audioPromise.cancel();
+
+    //   //   audioPromise = makeCancellableRequest(child);
+    //   // });
+
+    //   // audioPromise = audioPromise.then(() => {
+    //   //   console.log("signal", child);
+
+    //   //   playAudio(child.name);
+    //   //   setChild(child);
+
+    //   //   // setStackedNum((stackedNum) =>
+    //   //   //   stackedNum < 10 ? stackedNum++ : stackedNum
+    //   //   // );
+    //   //   // if (!signal.aborted) {
+    //   //   // testP = new Promise(function (resolve, reject, onCancel) {
+    //   //   //   setTimeout(resolve, 3000);
+    //   //   //   onCancel(() => {
+    //   //   //     console.log("onCancel called wewerwuer");
+    //   //   //     // clearTimeout(to);
+    //   //   //     reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+    //   //   //   });
+    //   //   return new Promise(function (resolve, reject, onCancel) {
+    //   //     setTimeout(resolve, 3000);
+    //   //     onCancel(() => {
+    //   //       console.log("onCancel called wewerwuer");
+    //   //       // clearTimeout(to);
+    //   //       reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+    //   //     });
+    //   //     // timeout(resolve, 3000, signal);
+
+    //   //     // signal.addEventListener("abort", listener);
+    //   //     // signal.addEventListener("abort", () => {
+    //   //     //   ComponentSelector.log("aborting ", signal);
+    //   //     //   window.clearTimeout(timeout);
+    //   //     //   reject(new DOMException("Aborted", "AbortError"));
+    //   //     // });
+    //   //     // }
+    //   //   });
+    //   // });
+
+    //   // Promise.each(children, audioPromise);
+    //   // children.map(async (child) => {
+    //   //   console.log(child, "outer");
+
+    //   //   // await newAudio(child, { signal });
+
+    //   // audioPromise = audioPromise.then(() => {
+    //   //   playAudio(child.name);
+    //   //   setChild(child);
+    //   //   console.log("signal", signal);
+
+    //   //   // setStackedNum((stackedNum) =>
+    //   //   //   stackedNum < 10 ? stackedNum++ : stackedNum
+    //   //   // );
+    //   //   // if (!signal.aborted) {
+    //   //   return new Promise(function (resolve) {
+    //   //     setTimeout(resolve, 3000);
+    //   //     // timeout(resolve, 3000, signal);
+
+    //   //     // signal.addEventListener("abort", listener);
+    //   //     // signal.addEventListener("abort", () => {
+    //   //     //   ComponentSelector.log("aborting ", signal);
+    //   //     //   window.clearTimeout(timeout);
+    //   //     //   reject(new DOMException("Aborted", "AbortError"));
+    //   //     // });
+    //   //     // }
+    //   //   });
+
+    //   //     // audioPromise = await audioPromise({signal: controller.signal})
+    //   //   });
+    // });
   };
 
   function play(url) {
@@ -107,10 +219,9 @@ export function App(props) {
   }
 
   const pause = () => {
-    // window.speechSynthesis.pause();
-    debugger;
-    controller.abort();
+    shouldCancel.current = true;
   };
+
   const resume = () => window.speechSynthesis.resume();
   const skip = () => {};
 
