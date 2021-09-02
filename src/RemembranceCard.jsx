@@ -2,7 +2,8 @@ import separator from "./separator.svg";
 import bloodyCross from "./bloody-cross.svg";
 import "./remembranceCard.css";
 
-const RemembranceCard = ({ name, age, year }) => {
+const RemembranceCard = ({ child }) => {
+  const { name, age, year } = child;
   return (
     <div class="card">
       <div class="card-inner">
