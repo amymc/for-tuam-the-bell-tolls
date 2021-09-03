@@ -1,5 +1,5 @@
-import separator from "./separator.svg";
-import bloodyCross from "./bloody-cross.svg";
+import separator from "./assets/separator.svg";
+import bloodyCross from "./assets/bloody-cross.svg";
 import "./remembranceCard.css";
 
 const RemembranceCard = ({ child }) => {

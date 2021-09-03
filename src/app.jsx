@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "preact/hooks";
 import * as Promise from "bluebird";
 import RemembranceCard from "./RemembranceCard.jsx";
+import Controls from "./Controls.jsx";
 import children from "./children.json";
 import "./app.css";
 
@@ -9,9 +10,16 @@ Promise.config({
   cancellation: true,
 });
 
+const stages = {
+  intro: "intro",
+  card: "card",
+  end: "end",
+};
+
 export function App(props) {
   const [isReady, setIsReady] = useState(false);
-  const [child, setChild] = useState(0);
+  const [child, setChild] = useState(null);
+  const [stage, setStage] = useState(stages.intro);
   const [stackedNum, setStackedNum] = useState(null);
 
   let shouldCancel = useRef(false);
@@ -149,12 +157,13 @@ export function App(props) {
     // window.speechSynthesis.cancel();
     console.log("wtf", phrase);
     // audioElement.play();
-    play("./src/angelus-bell-7.m4a");
+    play("./src/assets/angelus-bell-7.m4a");
     window.speechSynthesis.speak(utterance);
   }
 
   const start = () => {
     onClick(children);
+    setStage(stages.card);
   };
   const pause = () => {
     shouldCancel.current = true;
@@ -165,39 +174,48 @@ export function App(props) {
     const index = children.findIndex((item) => item === child);
     onClick(children.slice(index + 1));
   };
-  const skip = () => {};
+  const skip = () => {
+    setStage(stages.end);
+  };
 
   return (
     <>
-      {child ? (
-        <>
-          <RemembranceCard child={child} />
-          <div>
-            <button>
-              <span class="material-icons" onClick={pause}>
-                pause_circle_outline
-              </span>
-            </button>
-            <button>
-              <span class="material-icons" onClick={resume}>
-                play_circle
-              </span>
-            </button>
-            <button>
-              <span class="material-icons" onClick={skip}>
-                skip_next
-              </span>
-            </button>
-          </div>
-        </>
-      ) : (
+      {stage === stages.intro && (
         <>
           <h1 class="title">For Tuam the bell tolls</h1>
-          It's time to toll the bell
-          <button class="start" onClick={start} disabled={!isReady}>
+          <p>
+            In 2017 it was discoverd that nuns had buried the remains of
+            children in a septic tank on the site of a mother and baby home in
+            Tuam, Galway, Ireland. Between 1925 and 1960, a child had died, on
+            average, every two weeks at this home. In total 796 children died
+            there in the "care" of the nuns during that time.
+          </p>
+          It's time to toll the bell.
+          <button class="start-btn" onClick={start} disabled={!isReady}>
             Start
           </button>
         </>
+      )}
+
+      {stage === stages.card && (
+        <>
+          <RemembranceCard child={child} />
+          <Controls pause={pause} resume={resume} skip={skip} />
+        </>
+      )}
+
+      {stage == stages.end && (
+        <p>
+          The home in Tuam was one of 18 mother and baby homes that operated in
+          Ireland over a 76 year period. Women and girls in these homes were
+          subject to physical and emotional abusea and forced labour. Their
+          children were subject to illegal adoptions. Approximately 9,000
+          children died in these homes. To date, there has been no redress paid
+          to surviving victims.
+          <br />
+          Unbelievably, Catholic organisations are still heavily involved in
+          providing education and healthcare in Ireland.
+        </p>
       )}
     </>
   );
