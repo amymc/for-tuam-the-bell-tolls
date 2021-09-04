@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
 
 export default defineConfig({
-  base: "/for-whom-the-bell-tolls/",
+  base: "/for-tuam-the-bell-tolls/",
   plugins: [preact()],
   esbuild: {
     jsxFactory: `jsx`,
