@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from "preact/hooks";
-import * as Promise from "bluebird";
+// import * as Promise from "bluebird";
 import RemembranceCard from "./RemembranceCard.jsx";
 import Controls from "./Controls.jsx";
 import children from "./children.json";
 import "./app.css";
 
-Promise.config({
-  // Enable cancellation
-  cancellation: true,
-});
+// Promise.config({
+//   // Enable cancellation
+//   cancellation: true,
+// });
 
 const stages = {
   intro: "intro",
