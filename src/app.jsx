@@ -153,8 +153,6 @@ export function App(props) {
     utterance.rate = 0.9;
     const voices = window.speechSynthesis.getVoices();
     utterance.voice = voices.find((voice) => voice.name == "Moira");
-    // Interupt any speech already playing
-    // window.speechSynthesis.cancel();
     console.log("wtf", phrase);
     // audioElement.play();
     play("./src/assets/angelus-bell-7.m4a");
