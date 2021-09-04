@@ -175,6 +175,7 @@ export function App(props) {
     onClick(children.slice(index + 1));
   };
   const skip = () => {
+    shouldCancel.current = true;
     setStage(stages.end);
   };
 
@@ -187,12 +188,12 @@ export function App(props) {
             In 2017 it was discoverd that nuns had buried the remains of
             children in a septic tank on the site of a mother and baby home in
             Tuam, Galway, Ireland. Between 1925 and 1960, a child died, on
-            average, every two weeks at this home. In total 796 children died
-            there in the "care" of the nuns during that time.
+            average, every two weeks at this home. <br />
+            In total 796 children died there in the "care" of the nuns during
+            that time. These are their names.
           </p>
-          It's time to toll the bell.
           <button class="start-btn" onClick={start} disabled={!isReady}>
-            Start
+            Toll the bell
           </button>
         </>
       )}
