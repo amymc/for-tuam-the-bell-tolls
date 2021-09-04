@@ -186,7 +186,7 @@ export function App(props) {
           <p>
             In 2017 it was discoverd that nuns had buried the remains of
             children in a septic tank on the site of a mother and baby home in
-            Tuam, Galway, Ireland. Between 1925 and 1960, a child had died, on
+            Tuam, Galway, Ireland. Between 1925 and 1960, a child died, on
             average, every two weeks at this home. In total 796 children died
             there in the "care" of the nuns during that time.
           </p>
@@ -208,7 +208,7 @@ export function App(props) {
         <p>
           The home in Tuam was one of 18 mother and baby homes that operated in
           Ireland over a 76 year period. Women and girls in these homes were
-          subject to physical and emotional abusea and forced labour. Their
+          subject to physical and emotional abuse and forced labour. Their
           children were subject to illegal adoptions. Approximately 9,000
           children died in these homes. To date, there has been no redress paid
           to surviving victims.
