@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "preact/hooks";
 import RemembranceCard from "./RemembranceCard.jsx";
 import Controls from "./Controls.jsx";
 import children from "./children.json";
+import mp3 from "./assets/angelus-bell-7.mp3";
 import "./app.css";
 
 // Promise.config({
@@ -155,7 +156,7 @@ export function App(props) {
     utterance.voice = voices.find((voice) => voice.name == "Moira");
     console.log("wtf", phrase);
     // audioElement.play();
-    play("./src/assets/angelus-bell-7.m4a");
+    play(mp3);
     window.speechSynthesis.speak(utterance);
   }
 
