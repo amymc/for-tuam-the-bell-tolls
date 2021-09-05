@@ -23,6 +23,22 @@ export function App(props) {
   const [stage, setStage] = useState(stages.intro);
   const [stackedNum, setStackedNum] = useState(null);
 
+  const names = `Mary Carty 5 months`;
+
+  const arr = names.split("\n");
+
+  const result = arr.map((item) => {
+    const strings = item.trim().split(" ");
+
+    return {
+      name: strings.slice(0, -2).join(" "),
+      age: strings.slice(-2).join(" "),
+      year: 1960,
+    };
+  });
+
+  console.log("arr", JSON.stringify(result));
+
   let shouldCancel = useRef(false);
 
   useEffect(() => {
@@ -52,8 +68,8 @@ export function App(props) {
   // };
 
   const onClick = async (children) => {
-    console.log("signal", children);
-    // audioPromise.cancel();
+    console.log("click!!!");
+    // if (shouldCancel.current) return;
 
     // Promise.each(children, function (child) {
     //   // playAudio(child.name);
@@ -86,54 +102,115 @@ export function App(props) {
     //   return testP;
     // });
 
-    children.map(async (child, index) => {
-      // audioPromise.cancel();
-      console.log("ddd", child);
+    for (let child of children) {
+      console.log("wtf", child);
+      if (shouldCancel.current) {
+        console.log("break", child);
+
+        break;
+      }
       audioPromise = audioPromise.then(() => {
-        if (!shouldCancel.current) {
-          console.log("child", child);
-          console.log("child ind", index);
+        if (shouldCancel.current) return false;
+        // if (!shouldCancel.current) {
+        console.log("child", child);
+        console.log("child", children);
 
-          playAudio(child.name);
-          setChild(child);
+        // console.log("child ind", index);
 
-          // setStackedNum((stackedNum) =>
-          //   stackedNum < 10 ? stackedNum++ : stackedNum
-          // );
-          // if (!signal.aborted) {
-          // testP = new Promise(function (resolve, reject, onCancel) {
-          //   setTimeout(resolve, 3000);
-          //   onCancel(() => {
-          //     console.log("onCancel called wewerwuer");
-          //     // clearTimeout(to);
-          //     reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
-          //   });
-          return new Promise(function (resolve, reject, onCancel) {
-            // playAudio(child.name);
-            // setChild(child);
-            console.log("child", child);
+        playAudio(child.name);
+        setChild(child);
 
-            setTimeout(resolve, 3000);
+        // setStackedNum((stackedNum) =>
+        //   stackedNum < 10 ? stackedNum++ : stackedNum
+        // );
+        // if (!signal.aborted) {
+        // testP = new Promise(function (resolve, reject, onCancel) {
+        //   setTimeout(resolve, 3000);
+        //   onCancel(() => {
+        //     console.log("onCancel called wewerwuer");
+        //     // clearTimeout(to);
+        //     reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+        //   });
+        return new Promise(function (resolve, reject, onCancel) {
+          // playAudio(child.name);
+          // setChild(child);
+          if (shouldCancel.current) {
+            reject(new Error("cancel"));
+          }
+          setTimeout(resolve, 3000);
 
-            // setTimeout(resolve, 3000);
-            // onCancel(() => {
-            //   console.log("onCancel called wewerwuer");
-            //   // clearTimeout(to);
-            //   reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
-            // });
-            // timeout(resolve, 3000, signal);
+          // setTimeout(resolve, 3000);
+          // onCancel(() => {
+          //   console.log("onCancel called wewerwuer");
+          //   // clearTimeout(to);
+          //   reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+          // });
+          // timeout(resolve, 3000, signal);
 
-            // signal.addEventListener("abort", listener);
-            // signal.addEventListener("abort", () => {
-            //   ComponentSelector.log("aborting ", signal);
-            //   window.clearTimeout(timeout);
-            //   reject(new DOMException("Aborted", "AbortError"));
-            // });
-            // }
-          });
-        }
+          // signal.addEventListener("abort", listener);
+          // signal.addEventListener("abort", () => {
+          //   ComponentSelector.log("aborting ", signal);
+          //   window.clearTimeout(timeout);
+          //   reject(new DOMException("Aborted", "AbortError"));
+          // });
+          // }
+        });
+        // }
       });
-    });
+    }
+
+    // children.map(async (child, index) => {
+    //   // audioPromise.cancel();
+    //   console.log("child outer", child);
+    //   if (shouldCancel.current) return;
+    //   audioPromise = audioPromise.then(() => {
+    //     if (shouldCancel.current) return;
+    //     // if (!shouldCancel.current) {
+    //     console.log("child", child);
+    //     console.log("child", children);
+
+    //     console.log("child ind", index);
+
+    //     playAudio(child.name);
+    //     setChild(child);
+
+    //     // setStackedNum((stackedNum) =>
+    //     //   stackedNum < 10 ? stackedNum++ : stackedNum
+    //     // );
+    //     // if (!signal.aborted) {
+    //     // testP = new Promise(function (resolve, reject, onCancel) {
+    //     //   setTimeout(resolve, 3000);
+    //     //   onCancel(() => {
+    //     //     console.log("onCancel called wewerwuer");
+    //     //     // clearTimeout(to);
+    //     //     reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+    //     //   });
+    //     return new Promise(function (resolve, reject, onCancel) {
+    //       // playAudio(child.name);
+    //       // setChild(child);
+    //       if (shouldCancel.current) return;
+
+    //       setTimeout(resolve, 3000);
+
+    //       // setTimeout(resolve, 3000);
+    //       // onCancel(() => {
+    //       //   console.log("onCancel called wewerwuer");
+    //       //   // clearTimeout(to);
+    //       //   reject(new Error("cancel")); // no error throwed. With resolve() in this place it also hangs on await
+    //       // });
+    //       // timeout(resolve, 3000, signal);
+
+    //       // signal.addEventListener("abort", listener);
+    //       // signal.addEventListener("abort", () => {
+    //       //   ComponentSelector.log("aborting ", signal);
+    //       //   window.clearTimeout(timeout);
+    //       //   reject(new DOMException("Aborted", "AbortError"));
+    //       // });
+    //       // }
+    //     });
+    //     // }
+    //   });
+    // });
   };
 
   function play(url) {
@@ -154,13 +231,15 @@ export function App(props) {
     utterance.rate = 0.9;
     const voices = window.speechSynthesis.getVoices();
     utterance.voice = voices.find((voice) => voice.name == "Moira");
-    console.log("wtf", phrase);
     // audioElement.play();
     play(mp3);
+    // if (shouldCancel.current) return;
+
     window.speechSynthesis.speak(utterance);
   }
 
-  const start = () => {
+  const start = (e) => {
+    e.stopPropagation();
     onClick(children);
     setStage(stages.card);
   };
@@ -171,6 +250,8 @@ export function App(props) {
   const resume = () => {
     shouldCancel.current = false;
     const index = children.findIndex((item) => item === child);
+    console.log("index", index);
+    console.log("children", children);
     onClick(children.slice(index + 1));
   };
   const skip = () => {

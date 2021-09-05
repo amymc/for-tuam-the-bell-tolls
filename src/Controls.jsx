@@ -7,7 +7,8 @@ import "./app.css";
 const Controls = ({ pause, resume, skip }) => {
   const [showPlay, setShowPlay] = useState(false);
 
-  const onPlay = () => {
+  const onPlay = (e) => {
+    e.stopPropagation();
     resume();
     setShowPlay(false);
   };
