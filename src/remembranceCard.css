@@ -1,4 +1,4 @@
-.card {
+.remembrance-card {
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -11,7 +11,7 @@
   margin-bottom: 20px;
 }
 
-.card-inner {
+.remembrance-card-inner {
   border: 1px solid red;
   border: 1px solid darkslategrey;
   height: 100%;
@@ -31,7 +31,7 @@
   height: 44px;
 }
 
-.separator {
+.remembrance-separator {
   height: 50px;
   display: block;
   margin: 0 auto;
@@ -50,4 +50,10 @@
   width: 30px;
   top: 223px;
   right: 163px;
+}
+
+.separator {
+  height: 50px;
+  display: block;
+  margin: 0 auto;
 }

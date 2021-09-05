@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "preact/hooks";
 import PlayIcon from "./PlayIcon";
-import SkipIcon from "./SkipIcon";
+import SkipEndIcon from "./SkipEndIcon";
+import SkipStartIcon from "./SkipStartIcon";
 import PauseIcon from "./PauseIcon";
 import "./app.css";
 
-const Controls = ({ pause, resume, skip }) => {
+const Controls = ({ pause, resume, skipToEnd, skipToStart }) => {
   const [showPlay, setShowPlay] = useState(false);
 
   const onPlay = (e) => {
@@ -20,6 +21,9 @@ const Controls = ({ pause, resume, skip }) => {
 
   return (
     <div>
+      <button class="control-btn" onClick={skipToStart} title="back to start">
+        <SkipStartIcon />
+      </button>
       {showPlay ? (
         <button class="control-btn" onClick={onPlay} title="play">
           <PlayIcon />
@@ -30,8 +34,8 @@ const Controls = ({ pause, resume, skip }) => {
         </button>
       )}
 
-      <button class="control-btn" onClick={skip} title="skip to end">
-        <SkipIcon />
+      <button class="control-btn" onClick={skipToEnd} title="skip to end">
+        <SkipEndIcon />
       </button>
     </div>
   );

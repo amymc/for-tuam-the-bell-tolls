@@ -58,3 +58,30 @@ button:hover {
   margin: 20px 0;
   font-size: 14px;
 }
+.start-btn:hover {
+  background-color: white;
+  color: #282c34;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: #282c34;
+  width: 310px;
+  height: 538px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.card-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid red;
+  border: 1px solid darkslategrey;
+  height: 100%;
+  padding: 8px;
+}

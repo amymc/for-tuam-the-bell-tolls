@@ -5,8 +5,8 @@ import "./remembranceCard.css";
 const RemembranceCard = ({ child }) => {
   const { name, age, year } = child;
   return (
-    <div class="card">
-      <div class="card-inner">
+    <div class="remembrance-card">
+      <div class="remembrance-card-inner">
         In Loving Memory of
         <h2 class="card-title">{name}</h2>
         <span class="card-subtitle">
@@ -18,7 +18,7 @@ const RemembranceCard = ({ child }) => {
         <br />
         <br />
         Rest in peace
-        <img class="separator" src={separator} />
+        <img class="remembrance-separator" src={separator} />
       </div>
     </div>
   );
