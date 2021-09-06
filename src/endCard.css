@@ -29,11 +29,11 @@ h3 {
 }
 
 .source-link {
-  /* display: block; */
   color: black;
   font-size: 14px;
   text-decoration: underline;
   margin-top: 6px;
+  z-index: 2;
 }
 
 .source-link:hover {

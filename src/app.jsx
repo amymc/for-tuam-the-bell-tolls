@@ -89,7 +89,7 @@ export function App() {
           <div class="card">
             <div class="card-inner">
               <h2 class="card-title">For Tuam the bell tolls</h2>
-              In 2017 it was discoverd that nuns had buried the remains of
+              In 2014 it was discoverd that nuns had buried the remains of
               children in unmarked graves, some in a septic tank, on the site of
               a mother and baby home in Tuam, Galway, Ireland. Between 1925 and
               1960, a child died on average every two weeks at this home. <br />
