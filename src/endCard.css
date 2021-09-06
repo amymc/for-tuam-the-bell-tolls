@@ -1,0 +1,51 @@
+.end-card {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  color: #282c34;
+  width: 310px;
+  height: 538px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.sources {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+h3 {
+  margin: 6px 0 0 0;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+}
+
+.source-link {
+  /* display: block; */
+  color: black;
+  font-size: 14px;
+  text-decoration: underline;
+  margin-top: 6px;
+}
+
+.source-link:hover {
+  color: rgb(98, 110, 110);
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul > li {
+  margin-bottom: 10px;
+  text-align: left;
+}

@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "preact/hooks";
 import RemembranceCard from "./RemembranceCard";
-import RewindIcon from "./RewindIcon";
-import SkipStartIcon from "./SkipStartIcon";
+import EndCard from "./EndCard";
 import Controls from "./Controls";
 import separator from "./assets/separator.svg";
 import children from "./children.json";
@@ -14,20 +13,18 @@ const stages = {
   end: "end",
 };
 
-export function App(props) {
+export function App() {
   const [isReady, setIsReady] = useState(false);
   const [child, setChild] = useState(null);
   const [stage, setStage] = useState(stages.start);
-  const [stackedNum, setStackedNum] = useState(null);
   let timeout = useRef(null);
+  let audioPromise = Promise.resolve();
 
   useEffect(() => {
     window.speechSynthesis.onvoiceschanged = () => setIsReady(true);
 
     return () => clearTimeout(timeout.current);
   }, []);
-
-  let audioPromise = Promise.resolve();
 
   const onClick = async (children) => {
     for (let child of children) {
@@ -43,14 +40,13 @@ export function App(props) {
 
   function play(url) {
     return new Promise(function (resolve, reject) {
-      // return a promise
-      var audio = new Audio(); // create audio wo/ src
-      audio.preload = "auto"; // intend to play through
-      audio.autoplay = true; // autoplay when loaded
-      audio.onerror = reject; // on error, reject
-      audio.onended = resolve; // when done, resolve
+      var audio = new Audio();
+      audio.preload = "auto";
+      audio.autoplay = true;
+      audio.onerror = reject;
+      audio.onended = resolve;
       audio.volume = 0.3;
-      audio.src = url; // just for example
+      audio.src = url;
     });
   }
 
@@ -76,7 +72,10 @@ export function App(props) {
     onClick(children.slice(index + 1));
   };
 
-  const skipToStart = () => setStage(stages.start);
+  const skipToStart = () => {
+    clearTimeout(timeout.current);
+    setStage(stages.start);
+  };
 
   const skipToEnd = () => {
     clearTimeout(timeout.current);
@@ -120,53 +119,7 @@ export function App(props) {
       )}
 
       {stage == stages.end && (
-        <>
-          <div class="card">
-            <div class="card-inner">
-              <h2 class="card-title">Litany of abuse</h2>
-              The home in Tuam was one of 18 mother and baby homes that operated
-              in Ireland over a 76 year period. Women and girls in these homes
-              were subject to physical and emotional abuse and forced labour.
-              Their children were subject to illegal adoptions.
-              <br /> <br />
-              Approximately 9,000 children died in these homes, well above
-              infant mortaility rates for the time. To date, there has been no
-              redress paid to surviving victims.
-              <br /> <br />
-              Unbelievably, Catholic organisations are still heavily involved in
-              providing education and healthcare in Ireland.
-              <img class="separator" src={separator} />
-            </div>
-          </div>
-          {/* <p>
-            The home in Tuam was one of 18 mother and baby homes that operated
-            in Ireland over a 76 year period. Women and girls in these homes
-            were subject to physical and emotional abuse and forced labour.
-            Their children were subject to illegal adoptions. Approximately
-            9,000 children died in these homes. To date, there has been no
-            redress paid to surviving victims.
-            <br />
-            Unbelievably, Catholic organisations are still heavily involved in
-            providing education and healthcare in Ireland.
-          </p> */}
-
-          <div>
-            <button
-              class="control-btn"
-              onClick={skipToStart}
-              title="back to start"
-            >
-              <SkipStartIcon />
-            </button>
-            <button
-              class="control-btn"
-              onClick={resume}
-              title="return to cards"
-            >
-              <RewindIcon />
-            </button>
-          </div>
-        </>
+        <EndCard resume={resume} skipToStart={skipToStart} />
       )}
     </>
   );
